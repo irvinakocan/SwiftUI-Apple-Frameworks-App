@@ -11,17 +11,11 @@ struct FrameworkGridView: View {
     
     @StateObject var viewModel = FrameworkGridViewModel()
     
-    let columns: [GridItem] = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-    
     var body: some View {
         
         NavigationView {
             ScrollView {
-                LazyVGrid(columns: columns) {
+                LazyVGrid(columns: viewModel.columns) {
                     ForEach(MockData.frameworks,
                             // We can remove id part because SwiftUI knows it through the data type
                             content: {
@@ -36,6 +30,7 @@ struct FrameworkGridView: View {
                 .padding(.top, 20)
             }
             .navigationTitle("🍎 Frameworks")
+            // fullScreenCover - for full screen coverage
             .sheet(isPresented: $viewModel.isShowingDetailView, content: {
                 FrameworkDetailView(framework: viewModel.selectedFramework ?? MockData.sampleFramework, isShowingDetailView: $viewModel.isShowingDetailView)
             })
@@ -48,27 +43,5 @@ struct FrameworkGridView_Previews: PreviewProvider {
         FrameworkGridView()
             .preferredColorScheme(.dark)
             .previewDevice("iPhone 14")
-    }
-}
-
-struct FrameworkTitleView: View {
-    
-    let framework: Framework
-    
-    var body: some View {
-        VStack {
-            Image(framework.imageName)
-                .resizable()
-                .frame(
-                    width: 90, height: 90)
-            Text(framework.name)
-                .font(.title2)
-                .fontWeight(.semibold)
-                // You have the ability to shrink,
-                .scaledToFit()
-                // but you only can shrink this much
-                .minimumScaleFactor(0.6)
-        }
-        .padding()
     }
 }
